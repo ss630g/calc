@@ -1,4 +1,6 @@
 //Simran Preet Singh
+//
+//
 //06/24/17
 //What does this code do?
 //This code makes sound using audio files the library is used to do this
@@ -26,6 +28,8 @@
 #ifdef USE_OPENAL_SOUND
 #include </usr/include/AL/alut.h>
 #endif
+int i = 0;
+
 
 class T {
 
@@ -212,9 +216,13 @@ void godzillaphysics(void)
     t.rt(&t.tc);
     double tspan = t.td(&t.wt, &t.tc);
     if (tspan > gl.godzilladelay) {
-        ++gl.godzillawf;
-        if (gl.godzillawf >= 9) {
-            gl.godzillawf -= 9;
+        gl.godzillawf++;
+	godzilla.pos[0] += .01;
+	i++;
+        if (gl.godzillawf >= 8) {
+	    godzilla.pos[0] -= .01;
+            gl.godzillawf -= 8;
+	    i--;
         }
         t.rt(&t.wt);
     }
@@ -232,8 +240,8 @@ Ppmimage *godzillaimage()
 void showgodzilla()
 {
     //float x = gl.xres/2.0;
-    float y = 215;
-    float ht = 150.0;
+    float y = 200;
+    float ht = 100.0;
     float w = ht*2;
 
     glPushMatrix();
@@ -243,22 +251,38 @@ void showgodzilla()
     glAlphaFunc(GL_GREATER, 0.0f);
     glColor4ub(255,255,255,255);
 
-    int ax = gl.godzillawf % 3;
+    int ax = gl.godzillawf % 8;
     int ay = 0;
-    if (gl.godzillawf >= 3) {
+    if (gl.godzillawf >= 8) {
         ay = 1;
     }
     float tx = (float)ax / 3.0;
-    float ty = (float)ay/ 3.0;
+    float ty = (float)ay/ 1.0;
 
+godzilla.pos[0] = 100;
+
+    if(godzilla.pos[0] < 110) {
+
+    	godzilla.pos[0] += 1; 
     glBegin(GL_QUADS);
-    glTexCoord2f(tx,      ty+0.21); glVertex2i(godzilla.cx+100+w, y-ht);
-    glTexCoord2f(tx,      ty);    glVertex2i(godzilla.cx+100+w, y+ht);
-    glTexCoord2f(tx+0.34, ty);    glVertex2i(godzilla.cx+100-w, y+ht);
-    glTexCoord2f(tx+0.34, ty+0.21); glVertex2i(godzilla.cx+100-w, y-ht);
+    glTexCoord2f(tx-.25,      ty+1.0); glVertex2i(godzilla.cx-i+w, y-ht);
+    glTexCoord2f(tx-.25,      ty);    glVertex2i(godzilla.cx-i+w, y+ht);
+    glTexCoord2f(tx, ty);    glVertex2i(godzilla.cx-i-w, y+ht);
+    glTexCoord2f(tx, ty+1.0); glVertex2i(godzilla.cx-i-w, y-ht);
+    } 
+    if(godzilla.pos[0] > 100 ) {
+	i--;
+	godzilla.pos[0] -= 1;
+    glBegin(GL_QUADS);
+    glTexCoord2f(tx+.35,      ty+1.0); glVertex2i(godzilla.cx+i+w, y-ht);
+    glTexCoord2f(tx+.35,      ty);    glVertex2i(godzilla.cx+i+w, y+ht);
+    glTexCoord2f(tx, ty);    glVertex2i(godzilla.cx+i-w, y+ht);
+    glTexCoord2f(tx, ty+1.0); glVertex2i(godzilla.cx+i-w, y-ht);
+    }
     glEnd();
     glPopMatrix();
     glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_ALPHA_TEST);
+
 }
 

@@ -51,10 +51,10 @@ void renderBackground()
 	glColor3f(1.0,1.0,1.0);
 	glBindTexture(GL_TEXTURE_2D, gl.backgroundTexture);
 	glBegin(GL_QUADS);
-		glTexCoord2f(0.0, 1.0); glVertex2i(0,0);
-		glTexCoord2f(0.0, 0.0); glVertex2i(0, 600);
-		glTexCoord2f(1.0, 0.0); glVertex2i(800, 600);
-		glTexCoord2f(1.0, 1.0); glVertex2i(800, 0);
+		glTexCoord2f(gl.xc[0], gl.yc[1]); glVertex2i(0,0);
+		glTexCoord2f(gl.xc[0], gl.yc[0]); glVertex2i(0, gl.yres);
+		glTexCoord2f(gl.xc[1], gl.yc[0]); glVertex2i(gl.xres, gl.yres);
+		glTexCoord2f(gl.xc[1], gl.yc[1]); glVertex2i(gl.xres, 0);
 	glEnd();
 	glPopMatrix();
 	glBindTexture(GL_TEXTURE_2D, 0);

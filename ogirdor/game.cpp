@@ -59,7 +59,7 @@ Timers timers;
 Global gl;
 UserInput input;
 Level lev;
-Sprite heart2, heart1, speedboost1, shield1, mainChar, turret, enemy1, mariEnemy, godzilla;
+Sprite heart2, heart1, speedboost1, shield1, mainChar, turret, enemy1, mariEnemy, godzilla, female, obama, sun;
 Particle particle[20];
 Game game;
 //X Windows variables
@@ -101,6 +101,9 @@ extern Ppmimage *turretImage();
 extern Ppmimage *enemy1image();
 extern Ppmimage *godzillaimage();
 extern Ppmimage *mari_image();
+//extern Ppmimage *female_image();
+//extern Ppmimage *sun_image();
+//extern Ppmimage *obama_image();
 extern void shootWalkRight(float,float,float,float,float,float);
 extern void shootWalkLeft(float,float,float,float,float,float);
 extern void shootStandRight(float,float,float,float,float,float);
@@ -120,6 +123,9 @@ extern void showTurret();
 extern void showenemy1();
 extern void showgodzilla();
 extern void show_mari();
+//extern void show_female();
+//extern void show_sun();
+//extern void show_obama();
 extern void renderBackground();
 extern void renderPlatform();
 extern void healthBar(int, int);
@@ -167,6 +173,15 @@ void init()
 	mainChar.vel[0] = mainChar.vel[1] = mainChar.vel[2] = 0.0;
 	mariEnemy.cx = 100;
 	mariEnemy.cy = 0;
+	
+	//female.cx = 1000;
+	//female.cy = 0;
+	
+	//obama.cx = 1200;
+	//obama.cy = 0;
+
+	//sun.cx = 600;
+	//sun.cy = 0;
 	turret.cx = 300;
 	turret.cy = 90;
 	christianInit();
@@ -353,6 +368,9 @@ void initOpengl(void)
 	gl.enemy1Image = enemy1image();
 	gl.godzillaImage = godzillaimage();
 	gl.mari_image = mari_image();
+	//gl.obama_image = obama_image();
+	//gl.female_image = female_image();
+	//gl.sun_image = sun_image();
 	gl.metalImage = ppm6GetImage("./images/metalImage.ppm");
 	gl.lavaImage = ppm6GetImage("./images/lavaImage.ppm");
 	gl.backgroundImage = ppm6GetImage("./images/backgroundImage.ppm");
@@ -389,6 +407,9 @@ void initOpengl(void)
 	glGenTextures(1, &gl.enemy1Texture);
 	glGenTextures(1, &gl.godzillaTexture);
 	glGenTextures(1, &gl.mari_Texture);
+	//glGenTextures(1, &gl.female_Texture);
+	//glGenTextures(1, &gl.obama_Texture);
+	//glGenTextures(1, &gl.sun_Texture);
 	glGenTextures(1, &gl.logoTexture);
 	glGenTextures(1, &gl.playTexture);
 	glGenTextures(1, &gl.tutorialTexture);
@@ -561,9 +582,48 @@ void initOpengl(void)
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
 			GL_RGBA, GL_UNSIGNED_BYTE, mari_pointer);
 	free(mari_pointer); 
-	unlink("./images/Enemy_Mariachi_3.ppm");
+	unlink("./images/Enemy_Mariachi_3.ppm");			
 	//====================================================
+	//Female
+	//w = gl.female_image->width;
+	//h = gl.female_image->height; 
+	//glBindTexture(GL_TEXTURE_2D, gl.female_Texture);
+	//glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+	//glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+	//unsigned char *female_pointer = buildAlphaData(gl.female_image);
+	//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+	//		GL_RGBA, GL_UNSIGNED_BYTE, female_pointer);
+	//free(female_pointer); 
+	//unlink("./images/female.ppm");			
+	//======================================================
+	//Obama
+	//w = gl.obama_image->width;
+	//h = gl.obama_image->height; 
+	//glBindTexture(GL_TEXTURE_2D, gl.obama_Texture);
+	//glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+	//glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+	//unsigned char *obama_pointer = buildAlphaData(gl.obama_image);
+	//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+	//		GL_RGBA, GL_UNSIGNED_BYTE, obama_pointer);
+	//free(obama_pointer); 
+	//unlink("./images/obama.ppm");		
+	////=====================================================
+	//w = gl.sun_image->width;
+	//h = gl.sun_image->height; 
+	//glBindTexture(GL_TEXTURE_2D, gl.sun_Texture);
+	//glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+	//glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+	//unsigned char *sun_pointer = buildAlphaData(gl.sun_image);
+	//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+	//		GL_RGBA, GL_UNSIGNED_BYTE, sun_pointer);        	
+	//free(sun_pointer); 
+	//unlink("./images/sun.ppm");			
 
+
+
+
+
+	
 	//===============================================================
 	// Logo
 	w = gl.logoImage->width;
@@ -716,6 +776,10 @@ void initOpengl(void)
 			GL_RGBA, GL_UNSIGNED_BYTE, backgroundData);
 	free(backgroundData);
 	unlink("./images/backgroundImage.ppm");
+	gl.xc[0] = 0.0;
+	gl.xc[1] = 1.0;
+	gl.yc[0] = 0.0;
+	gl.yc[1] = 1.0;
 	//===============================================================
 
 	//===============================================================
@@ -1261,6 +1325,9 @@ void physics(void)
 		//man is walking...
 		//when time is up, advance the frame.
 		moveSpriteLeft(&mariEnemy);
+		moveSpriteLeft(&female);
+		moveSpriteLeft(&obama);
+		moveSpriteLeft(&sun);
 		moveSpriteLeft(&heart1);
 		moveSpriteLeft(&heart2);
 		moveSpriteLeft(&shield1);
@@ -1268,18 +1335,17 @@ void physics(void)
 		moveSpriteLeft(&turret);
 		moveSpriteLeft(&enemy1);
 		moveSpriteLeft(&godzilla);
+		moveLevelLeft();
 		timers.recordTime(&timers.timeCurrent);
 		double timeSpan =
 			timers.timeDiff(&timers.maincharacterTime,
 					&timers.timeCurrent);
 		if (timeSpan > gl.delay) {
-			//advance
 			++gl.maincharacterFrame;
 			if (gl.maincharacterFrame >= 8)
 				gl.maincharacterFrame -= 8;
 			timers.recordTime(&timers.maincharacterTime);
 		}
-		moveLevelLeft();
                 //gl.camera[0] += gl.movementSpeed;//2.0/lev.tilesize[0] * (0.05 / gl.delay);
 		for (int i=0; i<20; i++) {
 			gl.box[i].x -= 1.0 * (0.05 / gl.delay);
@@ -1289,11 +1355,14 @@ void physics(void)
 			if (gl.camera[0] < 0.0)
 				gl.camera[0] = 0.0;
 		}
+		gl.xc[0] += 0.001;
+		gl.xc[1] += 0.001;
 	}
 	if (gl.walk || gl.keys[XK_Left]) {
-		//man is walking...
-		//when time is up, advance the frame.
 		moveSpriteRight(&mariEnemy);
+		moveSpriteRight(&female);
+		moveSpriteRight(&sun);
+		moveSpriteRight(&obama);
 		moveSpriteRight(&heart1);
 		moveSpriteRight(&heart2);
 		moveSpriteRight(&shield1);
@@ -1301,18 +1370,17 @@ void physics(void)
 		moveSpriteRight(&turret);
 		moveSpriteRight(&enemy1);
 		moveSpriteRight(&godzilla);
+		moveLevelRight();
 		timers.recordTime(&timers.timeCurrent);
 		double timeSpan =
 			timers.timeDiff(&timers.maincharacterTime,
 					&timers.timeCurrent);
 		if (timeSpan > gl.delay) {
-			//advance
 			++gl.maincharacterFrame;
 			if (gl.maincharacterFrame >= 8)
 				gl.maincharacterFrame -= 8;
 			timers.recordTime(&timers.maincharacterTime);
 		}
-		moveLevelRight();
 		//gl.camera[0] -= gl.movementSpeed;//2.0/lev.tilesize[0] * (0.05 / gl.delay);
 		for (int i=0; i<20; i++) {
 			gl.box[i].x += 1.0 * (0.05 / gl.delay);
@@ -1322,9 +1390,12 @@ void physics(void)
 			if (gl.camera[0] < 0.0)
 				gl.camera[0] = 0.0;
 		}
+		if (gl.camera[0] > 0) {
+			gl.xc[0] -= 0.001;
+			gl.xc[1] -= 0.001;
+		}
 	}
-        
-        godzillaphysics();
+	godzillaphysics();
 }
 
 void render(void)
@@ -1375,6 +1446,9 @@ void render(void)
 		showenemy1();
                 showgodzilla();
 		show_mari();
+		//show_female();
+		//show_sun();
+		//show_obama();
 		healthBar(gl.xres, gl.yres);
 		renderTimeDisplay();
 		if (gl.state == STATE_PAUSE) {

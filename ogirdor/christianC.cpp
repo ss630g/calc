@@ -32,25 +32,8 @@
 #include "ppm.h"
 #include "fonts.h"
 #include "game.h"
-//#include <unistd.h>
-//#include <math.h>
-using namespace std;
 
-/*
-Ppmimage *characterImage(int charSelect)
-{
-    if (charSelect == 1) {
-        system("convert ./images/mainChar.png ./images/mainChar.ppm");
-        return ppm6GetImage("./images/mainChar.ppm");
-    } else if (charSelect == 2) {
-        system("convert ./images/mainChar2.png ./images/mainChar2.ppm");
-        return ppm6GetImage("./images/mainChar2.ppm");
-    }
-    //removes warning since no return outside conditionals
-    system("convert ./images/mainChar.png ./images/mainChar.ppm");
-    return ppm6GetImage("./images/mainChar.ppm");
-}
-*/
+using namespace std;
 void moveSpriteRight(Sprite *sprt)
 {
     if (gl.camera[0] > 0 && gl.cantMove == false) {
@@ -81,23 +64,54 @@ void moveLevelLeft()
 
 void tileCollision(Vec *tile, int row, int col)
 {
-    if (((mainChar.cy) >= (tile->y)) && ((mainChar.cy) <= (tile->y) + lev.tilesize[1])
-        && ((mainChar.cx) >= (tile->x)) && ((mainChar.cx) <= (tile->x) + lev.tilesize[0])) {
+    //printf("%i\n", lev.dynamicHeight[row]);
+    if ((((mainChar.cy) >= (tile->y)) && ((mainChar.cy) <= (tile->y) + lev.tilesize[1]))
+        && (((mainChar.cx) >= (tile->x)) && ((mainChar.cx) <= (tile->x) + lev.tilesize[0]))) {
         printf("row: %i - col: %i\n", row, col);
-        gl.cantMove = true;
-    } else {
-        gl.cantMove = false;
+        if (gl.directionFlag == 0) {
+            gl.camera[0] -= gl.movementSpeed;
+            gl.xc[0] -= 0.001;
+            gl.xc[1] -= 0.001;
+            moveSpriteRight(&mariEnemy);
+            moveSpriteRight(&female);
+            moveSpriteRight(&obama);
+            moveSpriteRight(&sun);
+            moveSpriteRight(&heart1);
+            moveSpriteRight(&heart2);
+            moveSpriteRight(&shield1);
+            moveSpriteRight(&speedboost1);
+            moveSpriteRight(&turret);
+            moveSpriteRight(&enemy1);
+            moveSpriteRight(&godzilla);
+        }
+        if (gl.directionFlag == 1) {
+            gl.camera[0] += gl.movementSpeed;
+            gl.xc[0] += 0.001;
+            gl.xc[1] += 0.001;
+            moveSpriteLeft(&mariEnemy);
+            moveSpriteLeft(&female);
+            moveSpriteLeft(&obama);
+            moveSpriteLeft(&sun);
+            moveSpriteLeft(&heart1);
+            moveSpriteLeft(&heart2);
+            moveSpriteLeft(&shield1);
+            moveSpriteLeft(&speedboost1);
+            moveSpriteLeft(&turret);
+            moveSpriteLeft(&enemy1);
+            moveSpriteLeft(&godzilla);
+        }
+        if (!((((mainChar.cy) >= (tile->y)) && ((mainChar.cy) <= (tile->y - 20) + lev.tilesize[1]))
+            && (((mainChar.cx) >= (tile->x - 2)) && ((mainChar.cx) <= (tile->x + 20) + lev.tilesize[0])))) {
+                gl.isJumpingFlag = false;
+                mainChar.cy = mainChar.cy + 20;
+        }
     }
-   
-    if (mainChar.cx == gl.camera[0])
-    {
-        gl.cantMove = false;
-    } 
-    //if current height is higher than current tile height
-    //cant move.
-    //jump to change current height.
-    //if current height is higher or equal, can move to that tile
-    // have a global variable for this to allow other sprites to move or not
+    
+    if (!((((mainChar.cy - 3) >= (tile->y)) && ((mainChar.cy - 3) <= (tile->y - 20) + lev.tilesize[1]))
+        && (((mainChar.cx) >= (tile->x)) && ((mainChar.cx) <= (tile->x + 20) + lev.tilesize[0])))) {
+            gl.initialJumpCy = 85;
+    }
+
 }
 
 void spriteDisappear(Sprite* sprt)
@@ -292,11 +306,11 @@ void checkJump()
     // When character reaches max height, decrement to highest tile on x coord
     if (gl.isJumpingFlag == 1 && gl.jumpDirectionFlag == 0) {
         if (mainChar.cy > gl.initialJumpCy) {
+        //if (!)
             mainChar.cy = mainChar.cy - ((gl.finalJumpCy - mainChar.cy) * gl.jumpRate) - 1;
         }
-        if (mainChar.cy <= 85) {
-            //modyify this later to set to highest tile level
-             mainChar.cy = 85;
+        if (mainChar.cy <= gl.initialJumpCy) {
+            mainChar.cy = gl.initialJumpCy;
             gl.isJumpingFlag = 0;
         }
     }
@@ -439,7 +453,8 @@ void renderSpeedboost1()
         glPopMatrix();
         glBindTexture(GL_TEXTURE_2D, 0);
         glDisable(GL_ALPHA_TEST);
-        if (mainChar.cx == speedboost1.cx) {
+        if ((mainChar.cx > (speedboost1.cx - 10) && mainChar.cx < (speedboost1.cx + 10))
+        && ((mainChar.cy > (speedboost1.cy - 10)) && (mainChar.cy < (speedboost1.cy + 10)))) {
             //if character picks up power up,
             //stop rendering and set x to -999999 to avoid
             //picking up invisible power ups
@@ -474,7 +489,8 @@ void renderShield1()
         glPopMatrix();
         glBindTexture(GL_TEXTURE_2D, 0);
         glDisable(GL_ALPHA_TEST);
-        if (mainChar.cx > (shield1.cx - 10) && mainChar.cx < (shield1.cx + 10)) {
+        if ((mainChar.cx > (shield1.cx - 10) && mainChar.cx < (shield1.cx + 10))
+        && ((mainChar.cy > (shield1.cy - 10)) && (mainChar.cy < (shield1.cy + 10)))) {
             //if character picks up power up,
             //stop rendering and set x to -999999 to avoid
             //picking up invisible power ups
@@ -508,7 +524,8 @@ void renderHeart1()
         glPopMatrix();
         glBindTexture(GL_TEXTURE_2D, 0);
         glDisable(GL_ALPHA_TEST);
-        if (mainChar.cx > (heart1.cx - 10) && mainChar.cx < (heart1.cx + 10)) {
+        if ((mainChar.cx > (heart1.cx - 10) && mainChar.cx < (heart1.cx + 10))
+        && ((mainChar.cy > (heart1.cy - 10)) && (mainChar.cy < (heart1.cy + 10)))) {
             //if character picks up power up,
             //stop rendering and set x to -999999 to avoid
             //picking up invisible power ups
@@ -547,7 +564,8 @@ void renderHeart2()
         glPopMatrix();
         glBindTexture(GL_TEXTURE_2D, 0);
         glDisable(GL_ALPHA_TEST);
-        if (mainChar.cx > (heart2.cx - 10) && mainChar.cx < (heart2.cx + 10)) {
+        if ((mainChar.cx > (heart2.cx - 10) && mainChar.cx < (heart2.cx + 10))
+        && ((mainChar.cy > (heart2.cy - 10)) && (mainChar.cy < (heart2.cy + 10)))) {
             //if character picks up power up,
             //stop rendering and set x to -999999 to avoid
             //picking up invisible power ups
@@ -567,8 +585,8 @@ void christianInit()
 {
     //initialize my sprites' x and y positions
     mainChar.cy = 85;
-    shield1.cx = 650;
-    shield1.cy = 90;
+    shield1.cx = 900;
+    shield1.cy = 180;
     heart1.cx = 700;
     heart1.cy = 90;
     heart2.cx = 800;
@@ -578,6 +596,7 @@ void christianInit()
 }
 void renderChristianSprites(int charSelect)
 {
+    printf("x: %f - y: %f\n", mainChar.cx, mainChar.cy);
     renderMainCharacter(charSelect);
     renderShield1();
     renderSpeedboost1();

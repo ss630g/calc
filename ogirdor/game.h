@@ -109,6 +109,8 @@ extern class Global {
 	int gameDelay;
 	int minutes;
 	State state;
+	Flt xc[2];
+	Flt yc[2];
 	Ppmimage *maincharacterImage;
     Ppmimage *maincharacter1Image;
     Ppmimage *maincharacter2Image;
@@ -119,6 +121,9 @@ extern class Global {
 	Ppmimage *enemy1Image;
 	Ppmimage *godzillaImage;
 	Ppmimage *mari_image; 
+	Ppmimage *female_image; 
+	Ppmimage *obama_image; 
+	Ppmimage *sun_image; 
 	Ppmimage *logoImage;
 	Ppmimage *playImage;
 	Ppmimage *tutorialImage;
@@ -172,6 +177,9 @@ extern class Global {
 	GLuint enemy1Texture;
 	GLuint godzillaTexture;
 	GLuint mari_Texture;
+	GLuint female_Texture;
+	GLuint obama_Texture;
+	GLuint sun_Texture;
 	GLuint backgroundTexture;
 	GLuint platformTexture;
 	GLuint lavaTexture;
@@ -263,6 +271,9 @@ extern class Global {
 	    enemy1Image = NULL;
 	    godzillaImage = NULL;
 	    mari_image = NULL; 
+	    female_image = NULL; 
+	    obama_image = NULL; 
+	    sun_image = NULL; 
 	    logoImage = NULL;
 	    playImage = NULL;
 	    tutorialImage = NULL;
@@ -395,10 +406,10 @@ extern class Sprite {
 	int health;
 	Sprite () {
 	    health = 10;
-	    cx = 600;
-	    cy = 90;
+	    cx = gl.xres/2;
+	    cy = 100;
 	}
-} heart2, heart1, speedboost1, shield1, mainChar, turret, enemy1, mariEnemy, godzilla;
+} heart2, heart1, speedboost1, shield1, mainChar, turret, enemy1, mariEnemy, godzilla, sun, female, obama;
 #endif
 
 

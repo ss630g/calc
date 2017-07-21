@@ -38,32 +38,29 @@ using namespace std;
 
 
 /*
-class my_time {
-    public:
-        double physicsRate;
-        double oobillion;
-        struct timespec timeStart, timeEnd, timeCurrent;
-        struct timespec walkTime;
-        my_time() {
-            physicsRate = 1.0 / 30.0;
-            oobillion = 1.0 / 1e9;
-        }
-       
+   class my_time {
+   public:
+   double physicsRate;
+   double oobillion;
+   struct timespec timeStart, timeEnd, timeCurrent;
+   struct timespec walkTime;
+   my_time() {
+   physicsRate = 1.0 / 30.0;
+   oobillion = 1.0 / 1e9;
+   }
+   double timeDiff(struct timespec *start, struct timespec *end) {
+   return (double)(end->tv_sec - start->tv_sec ) +
+   (double)(end->tv_nsec - start->tv_nsec) * oobillion;
+   }
+   void timeCopy(struct timespec *dest, struct timespec *source) {
+   memcpy(dest, source, sizeof(struct timespec));
+   }
+   void recordTime(struct timespec *t) {
+   clock_gettime(CLOCK_REALTIME, t);
+   }
 
-	 double timeDiff(struct timespec *start, struct timespec *end) {
-            return (double)(end->tv_sec - start->tv_sec ) +
-                (double)(end->tv_nsec - start->tv_nsec) * oobillion;
-        }
-        void timeCopy(struct timespec *dest, struct timespec *source) {
-            memcpy(dest, source, sizeof(struct timespec));
-        }
-        void recordTime(struct timespec *t) {
-            clock_gettime(CLOCK_REALTIME, t);
-}
- 
-      
-} time;
-*/
+   } time;
+   */
 
 
 
@@ -74,6 +71,32 @@ Ppmimage* mari_image()
     system("convert ./images/Enemy_Mariachi_3.gif ./images/Enemy_Mariachi_3.ppm");
     return ppm6GetImage("./images/Enemy_Mariachi_3.ppm");
 }
+
+
+Ppmimage* female_image() 
+{
+    system("convert ./images/female_fighter.png ./images/female_fighter.ppm");
+    return ppm6GetImage("./images/female_fighter.ppm");
+}
+
+
+Ppmimage* obama_image()
+{
+    system("convert ./images/obama.gif ./images/obama.ppm");
+    return ppm6GetImage("./images/obama.ppm");
+}
+
+Ppmimage* sun_image()
+{
+ system("convert ./images/sun.gif ./images/sun.ppm");
+     return ppm6GetImage("./images/sun.ppm");
+     }
+
+
+
+
+
+
 
 //first enemy
 void show_mari() 
@@ -107,7 +130,113 @@ void show_mari()
     glPopMatrix();
     glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_ALPHA_TEST);
+}										
+
+void show_female() 
+{
+    if (gl.initDone == 0) {
+	float x = gl.xres/1; 
+	x = x-60; //x cord
+    }
+    female.cy = 110; // y cord
+    float ht = 50.0;//estatura de la mujer
+    float w = ht*0.5; 
+
+    glPushMatrix();
+    glColor3f(1.0, 1.0, 1.0);
+    glBindTexture(GL_TEXTURE_2D, gl.female_Texture); 
+    glEnable(GL_ALPHA_TEST);
+    glAlphaFunc(GL_GREATER, 0.0f);
+    glColor4ub(255,255,255,255);
+    int ax = 1;   
+    int ay = 1;
+    if (1 >= 1)
+	ay = 0;
+    float tx = (float)ax / 8.0;
+    float ty = (float)ay / 1.0;
+    glBegin(GL_QUADS);
+    glTexCoord2f(tx,      ty+ 1.0); glVertex2i(female.cx +w, female.cy-ht);
+    glTexCoord2f(tx,      ty);    glVertex2i(female.cx +w, female.cy+ht);
+    glTexCoord2f(tx+.08, ty);    glVertex2i(female.cx-w, female.cy+ht);
+    glTexCoord2f(tx+.08, ty+1.0); glVertex2i(female.cx-w, female.cy-ht);
+    glEnd();
+    glPopMatrix();
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glDisable(GL_ALPHA_TEST);
 }
+
+void show_obama()
+{
+    if (gl.initDone == 0) {
+	float x = gl.xres/1;
+	x = x-60; //x cord
+    }
+    //obama.cx = 200;	charceter.cx is to make him follow megaman
+    obama.cy = 300; // y cord
+    float ht = 75.0;//height of mari
+    float w = ht*0.5;
+
+    glPushMatrix();
+    glColor3f(1.0, 1.0, 1.0);
+    glBindTexture(GL_TEXTURE_2D, gl.obama_Texture);
+    glEnable(GL_ALPHA_TEST);
+    glAlphaFunc(GL_GREATER, 0.0f);
+    glColor4ub(255,255,255,255);
+    int ax = 1;
+    int ay = 1;
+    if (1 >= 1)
+	ay = 0;
+    float tx = (float)ax / 7.0;
+    float ty = (float)ay / 1.0;
+    glBegin(GL_QUADS);
+    glTexCoord2f(tx,      ty+1.0); glVertex2i(obama.cx+w, obama.cy-ht);
+    glTexCoord2f(tx,      ty+0);    glVertex2i(obama.cx+w, obama.cy+ht);
+    glTexCoord2f(tx+1.0, ty+0);    glVertex2i(obama.cx-w, obama.cy+ht);
+    glTexCoord2f(tx+1.0, ty+1.0); glVertex2i(obama.cx-w, obama.cy-ht);
+    glEnd();
+    glPopMatrix();
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glDisable(GL_ALPHA_TEST);
+}
+
+void show_sun()
+{
+    if (gl.initDone == 0) {
+        float x = gl.xres/1;
+        x = x-60; //x cord
+    }
+    sun.cx = 200;   //charceter.cx is to make him follow megaman
+    sun.cy = 400; // y cord
+    float ht = 75.0;//height of mari
+    float w = ht*0.5;
+
+    glPushMatrix();
+    glColor3f(1.0, 1.0, 1.0);
+    glBindTexture(GL_TEXTURE_2D, gl.sun_Texture);
+    glEnable(GL_ALPHA_TEST);
+    glAlphaFunc(GL_GREATER, 0.0f);
+    glColor4ub(255,255,255,255);
+    int ax = 1;
+    int ay = 1;
+    if (1 >= 1)
+        ay = 0;
+    float tx = (float)ax / 7.0;
+    float ty = (float)ay / 1.0;
+    glBegin(GL_QUADS);
+    glTexCoord2f(tx,      ty+1.0); glVertex2i(sun.cx+w, sun.cy-ht);
+    glTexCoord2f(tx,      ty+0);    glVertex2i(sun.cx+w, sun.cy+ht);
+    glTexCoord2f(tx+1.0, ty+0);    glVertex2i(sun.cx-w, sun.cy+ht);
+    glTexCoord2f(tx+1.0, ty+1.0); glVertex2i(sun.cx-w, sun.cy-ht);
+    glEnd();
+    glPopMatrix();
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glDisable(GL_ALPHA_TEST);
+}
+
+
+
+
+
 
 class Enemy {
     protected:
@@ -219,24 +348,24 @@ bool Enemy::GetAlive(){
 */
 
 /*
-void Mari_Physics()
-{
-    if(true) {  //h > 0
-	//man is walking...
-	//when time is up, advance the frame.
-	time.recordTime(&time.timeCurrent);
-	double timeSpan = time.timeDiff(&time.walkTime, &time.timeCurrent);
-	if (timeSpan > gl.delay) {
-	    //advance
-	    ++gl.walkFrame;
-	    if (gl.walkFrame >= 16)
-		gl.walkFrame -= 16;
-	    timers.recordTime(&timers.walkTime);
-	}
+   void Mari_Physics()
+   {
+   if(true) {  //h > 0
+//man is walking...
+//when time is up, advance the frame.
+time.recordTime(&time.timeCurrent);
+double timeSpan = time.timeDiff(&time.walkTime, &time.timeCurrent);
+if (timeSpan > gl.delay) {
+//advance
+++gl.walkFrame;
+if (gl.walkFrame >= 16)
+gl.walkFrame -= 16;
+timers.recordTime(&timers.walkTime);
+}
 
-	if(timeSpan > gl.delay){
-            ++gl.walkFrame;
-   }
+if(timeSpan > gl.delay){
+++gl.walkFrame;
+}
 
 
 
